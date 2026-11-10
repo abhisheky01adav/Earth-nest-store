@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EarthNest | Timeless Sustainable Luxury</title><link rel="stylesheet" href="/style.css"></head><body>
+<div class="bar">✨ Free plastic-free shipping across India on orders above ₹999</div>
+<div id="hdr"></div><main id="view"></main><div id="ftr"></div><div id="toast"></div>
+<script src="/app.js"></script>
+<script>
+let P = [], S = {};
+const card = p => `<div class="card"><a href="#/product/${p.id}" class="thumb">${esc(p.emoji)}${p.mrp > p.price ? '<span class="tag">Sale</span>' : ''}</a><div class="cb"><small>${esc(p.category)}</small><h3><a href="#/product/${p.id}">${esc(p.name)}</a></h3>
+<div class="row"><div><b>${inr(p.price)}</b> ${p.mrp > p.price ? `<s>${inr(p.mrp)}</s>` : ''}</div>${p.stock > 0 ? `<button class="btn sm" data-add="${p.id}">Add to Bag</button>` : '<span class="oos">Sold out</span>'}</div></div></div>`;
+const totals = () => { const sub = getCart().reduce((s, i) => s + (P.find(p => p.id === i.id)?.price || 0) * i.qty, 0); const ship = sub === 0 || sub >= S.freeShippingAbove ? 0 : S.shippingFee; return { sub, ship, total: sub + ship }; };
+function add(id, n = 1) {
+  const p = P.find(x => x.id == id), c = getCart(), i = c.find(x => x.id == id), q = (i ? i.qty : 0) + n;
+  if (!p || q > p.stock) return toast(p ? `Only ${p.stock} in stock` : 'Item unavailable');
+  if (q <= 0) c.splice(c.indexOf(i), 1); else if (i) i.qty = q; else c.push({ id: p.id, qty: 1 });
+  setCart(c); return true;
+}
+const V = h => { $('#view').innerHTML = h; scrollTo(0, 0); };
+
+function home() {
+  V(`<section class="hero"><div class="wrap"><div><span class="pill">Conscious Indian Living</span><h1>Timeless Ethics.<br><em>Natural Goods.</em></h1>
+  <p>Handcrafted homeware, organic textiles and sustainable essentials designed to bring mindful calm into your daily rituals.</p>
+  <div class="gap"><a class="btn amber" href="#/shop">Explore Catalog</a><a class="btn out" href="#/journal">Our Impact Story</a></div></div>
+  <div class="feat"><div><span class="e">🌿</span><b>100% Plastic-Free</b><span>Packed in biodegradable paper and cardboard.</span></div><div><span class="e">🧵</span><b>Artisan Made</b><span>Supporting traditional Indian craft clusters.</span></div></div></div></section>
+  <section class="pad"><div class="wrap"><div class="sh"><div><span class="eyebrow">Curated Collection</span><h2 class="serif">Featured Essentials</h2></div><a class="link" href="#/shop">View all products →</a></div>
+  <div class="grid">${P.slice(0, 4).map(card).join('')}</div></div></section>`);
+}
+let cat = 'All', q = '';
+function shop(arg) {
+  if (arg) cat = decodeURIComponent(arg);
+  const cats = ['All', ...new Set(P.map(p => p.category))];
+  V(`<div class="wrap pg"><h1>Sustainable Catalog</h1><p class="sub">Certified organic, plastic-free home goods.</p>
+  <input id="q" placeholder="🔍 Search products…" value="${esc(q)}" style="max-width:380px;margin-bottom:16px">
+  <div class="chips">${cats.map(c => `<a class="chip ${c === cat ? 'on' : ''}" href="#/shop/${encodeURIComponent(c)}">${esc(c)}</a>`).join('')}</div><div class="grid" id="list"></div></div>`);
+  const draw = () => { const l = P.filter(p => (cat === 'All' || p.category === cat) && (p.name + p.material + p.category).toLowerCase().includes(q.toLowerCase())); $('#list').innerHTML = l.map(card).join('') || '<p class="sub">No products found.</p>'; };
+  $('#q').oninput = e => { q = e.target.value; draw(); }; draw();
+}
+function product(id) {
+  const p = P.find(x => x.id == id); if (!p) return shop();
+  V(`<div class="wrap pg"><a class="link" href="#/shop">← Back to catalog</a><div class="two" style="margin-top:24px"><div class="big">${esc(p.emoji)}</div><div style="align-self:center">
+  <span class="eyebrow">${esc(p.category)} · ${esc(p.material)}</span><h1 style="font-size:38px;margin:8px 0 14px">${esc(p.name)}</h1>
+  <p style="font-size:26px;font-weight:700;margin-bottom:6px">${inr(p.price)} ${p.mrp > p.price ? `<s style="font-size:15px">${inr(p.mrp)}</s>` : ''}</p><p class="sub" style="margin-bottom:4px">Inclusive of all taxes · ${p.stock > 0 ? (p.stock <= 5 ? `Only ${p.stock} left` : 'In stock') : '<b class="oos">Sold out</b>'}</p>
+  <p style="color:#57534e;margin:18px 0 26px">${esc(p.desc)}</p>
+  ${p.stock > 0 ? `<div class="gap" style="display:flex;gap:12px"><button class="btn" style="flex:1" data-buy="${p.id}">Buy Now</button><button class="btn out" data-add="${p.id}">Add to Bag</button></div>` : ''}
+  <div style="border-top:1px solid var(--c2);margin-top:28px;padding-top:18px;font-size:13px;color:#57534e;line-height:2">🚚 Free shipping on orders above ${inr(S.freeShippingAbove)}<br>🛡️ 7-day hassle-free returns & exchange<br>📱 Instant UPI QR & Cash on Delivery</div></div></div></div>`);
+}
+function cart() {
+  const c = getCart().filter(i => P.some(p => p.id === i.id)), t = totals();
+  V(`<div class="wrap pg"><h1>Shopping Bag</h1>${!c.length ? `<div class="box" style="text-align:center;padding:60px"><div style="font-size:48px">🛍️</div><h3>Your bag is empty</h3><p class="sub">Discover our mindful collection.</p><a class="btn" href="#/shop">Start Shopping</a></div>` :
+  `<div class="three" style="margin-top:24px"><div>${c.map(i => { const p = P.find(x => x.id === i.id); return `<div class="ci"><div class="t">${esc(p.emoji)}</div><div class="n"><b class="serif">${esc(p.name)}</b><br><small style="color:var(--mut)">${inr(p.price)} each</small></div>
+  <div class="q"><button data-qty="${p.id}" data-d="-1">−</button><b>${i.qty}</b><button data-qty="${p.id}" data-d="1">+</button></div><b style="width:80px;text-align:right">${inr(p.price * i.qty)}</b><button class="link" data-rm="${p.id}" style="color:var(--bad)">✕</button></div>`; }).join('')}</div>
+  <div class="box sum"><h3 class="serif">Order Summary</h3><div><span>Subtotal</span><b>${inr(t.sub)}</b></div><div><span>Shipping</span><b>${t.ship ? inr(t.ship) : 'FREE'}</b></div><div class="tot"><span>Total</span><span>${inr(t.total)}</span></div><a class="btn block" href="#/checkout" style="margin-top:14px">Proceed to Checkout</a></div></div>`}</div>`);
+}
+function checkout() {
+  const c = getCart().filter(i => P.some(p => p.id === i.id)); if (!c.length) return (location.hash = '#/cart');
+  const t = totals(), u = me() || {}, upi = `upi://pay?pa=${encodeURIComponent(S.upiId)}&pn=${encodeURIComponent(S.upiName)}&am=${t.total}&cu=INR`;
+  V(`<div class="wrap pg" style="max-width:820px"><h1>Secure Checkout</h1><form id="co" style="display:grid;gap:22px;margin-top:20px">
+  <div class="box"><h3 class="serif">1. Shipping address (India)</h3><div class="f2">
+  <div><label>Full name</label><input name="name" required value="${esc(u.name || '')}"></div><div><label>Mobile number</label><input name="phone" required pattern="[6-9][0-9]{9}" placeholder="9876543210"></div>
+  <div class="full"><label>Street address</label><input name="address" required placeholder="Flat, house no., street, area"></div>
+  <div><label>City</label><input name="city" required></div><div><label>PIN code</label><input name="pin" required pattern="[0-9]{6}" placeholder="144401"></div></div></div>
+  <div class="box"><h3 class="serif">2. Payment method</h3>
+  <label class="pay on" id="p-upi" style="text-transform:none;letter-spacing:0;font-size:14px;color:inherit"><input type="radio" name="payment" value="upi" checked><div style="flex:1"><b>Instant UPI (GPay, PhonePe, Paytm, BHIM)</b><br><small style="color:var(--mut)">Scan the QR or tap the button to pay ${inr(t.total)}, then enter the UTR number.</small>
+  <div class="qr" id="upi-box"><img alt="UPI QR" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upi)}"><div><p><b>UPI ID:</b> <span class="mono">${esc(S.upiId)}</span></p><p style="margin:4px 0 10px"><b>Bank:</b> ${esc(S.bankName)} · A/C ${esc(S.accountNo)} · IFSC ${esc(S.ifscCode)}</p>
+  <a class="btn sm out" href="${esc(upi)}">Open UPI app</a><label style="margin-top:12px">12-digit UTR / reference number</label><input name="utr" id="utr" maxlength="12" pattern="[0-9]{12}" required class="mono" placeholder="123456789012"></div></div></div></label>
+  <label class="pay" id="p-cod" style="text-transform:none;letter-spacing:0;font-size:14px;color:inherit"><input type="radio" name="payment" value="cod"><div><b>Cash on Delivery</b><br><small style="color:var(--mut)">Pay in cash or UPI when your eco-package arrives.</small></div></label></div>
+  <div id="err"></div><button class="btn block" style="padding:16px;font-size:16px">Confirm & Place Order (${inr(t.total)})</button></form></div>`);
+  document.querySelectorAll('[name=payment]').forEach(r => r.onchange = () => { const u = r.value === 'upi' && r.checked; if (r.checked) { $('#upi-box').hidden = !u; $('#utr').required = u; $('#p-upi').classList.toggle('on', u); $('#p-cod').classList.toggle('on', !u); } });
+  $('#co').onsubmit = async e => {
+    e.preventDefault(); const f = new FormData(e.target), btn = e.target.querySelector('button.btn.block'); btn.disabled = true;
+    try {
+      const o = await api('/api/orders', { method: 'POST', body: { items: getCart(), payment: f.get('payment'), utr: f.get('utr'), address: Object.fromEntries(['name', 'phone', 'address', 'city', 'pin'].map(k => [k, f.get(k)])) } });
+      sessionStorage.setItem('en_last', JSON.stringify(o)); setCart([]); P = await api('/api/products'); location.hash = '#/confirm';
+    } catch (er) { $('#err').innerHTML = `<div class="msg">${esc(er.message)}</div>`; btn.disabled = false; }
+  };
+}
+function confirmPage() {
+  const o = JSON.parse(sessionStorage.getItem('en_last') || 'null'); if (!o) return home();
+  V(`<div class="wrap" style="max-width:560px;text-align:center;padding:70px 20px"><div class="ok">✓</div><h1 style="font-size:36px">Order placed!</h1><p class="sub">Order ID: <b class="mono">${esc(o.id)}</b></p>
+  <div class="box sum" style="text-align:left;margin:20px 0 26px"><div><span>Payment</span><b>${o.payment.toUpperCase()}</b></div><div><span>Total</span><b>${inr(o.total)}</b></div><div><span>Status</span><b>${o.status === 'awaiting_verification' ? 'Payment being verified' : 'Order received'}</b></div><div><span>Delivery</span><b>3–5 business days</b></div></div><a class="btn" href="#/">Back to store</a></div>`);
+}
+async function orders() {
+  if (!tok()) return V(`<div class="wrap pg"><h1>My Orders</h1><p class="sub">Please <a class="link" href="/login.html?next=/%23/orders">log in</a> to see your orders.</p></div>`);
+  let o = []; try { o = await api('/api/my-orders'); } catch {}
+  V(`<div class="wrap pg"><h1>My Orders</h1>${!o.length ? '<p class="sub">No orders yet.</p>' : o.map(x => `<div class="box" style="margin-top:16px"><div class="row" style="border:0;padding:0"><b class="mono">${esc(x.id)}</b><span class="badge ${esc(x.status)}">${esc(x.status.replace('_', ' '))}</span></div>
+  <p class="sub" style="margin:6px 0">${new Date(x.date).toLocaleDateString('en-IN')} · ${inr(x.total)} · ${x.payment.toUpperCase()}</p><p style="font-size:14px">${x.items.map(i => `${esc(i.emoji)} ${esc(i.name)} × ${i.qty}`).join('<br>')}</p></div>`).join('')}</div>`);
+}
+function journal() {
+  V(`<div class="wrap pg" style="max-width:800px"><span class="eyebrow">Sustainability Journal</span><h1 style="margin:6px 0 24px">Slow Living & Conscious Choices</h1>
+  ${[['October 2026 · 6 min read', '10 Simple Plastic-Free Swaps for Every Indian Kitchen', 'Small changes at the sink, in spice storage and on grocery runs add up quickly to eliminate single-use plastics.'], ['September 2026 · 5 min read', 'The Timeless Science of Copper and Clay Water Vessels', 'Exploring Ayurvedic traditions of natural cooling and mineral enrichment through handcrafted matkas and copper bottles.']].map(a => `<article class="box" style="margin-bottom:20px"><small style="color:#9ca3af;font-weight:600">${a[0]}</small><h2 style="font-size:24px;margin:6px 0 10px">${a[1]}</h2><p style="color:#57534e">${a[2]}</p></article>`).join('')}</div>`);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-add],[data-buy],[data-qty],[data-rm]'); if (!t) return; const d = t.dataset;
+  if (d.add && add(d.add)) toast('Added to your bag');
+  if (d.buy && add(d.buy)) location.hash = '#/cart';
+  if (d.qty) { add(d.qty, +d.d); cart(); }
+  if (d.rm) { setCart(getCart().filter(i => i.id != d.rm)); cart(); }
+});
+const routes = { '': home, shop, product, cart, checkout, confirm: confirmPage, orders, journal };
+const go = () => { const [r, a] = location.hash.slice(2).split('/'); (routes[r] || home)(a); };
+addEventListener('hashchange', go);
+init(); Promise.all([api('/api/products'), api('/api/settings')]).then(([p, s]) => { P = p; S = s; go(); }).catch(() => V('<div class="wrap pg"><h1>Store is offline</h1><p class="sub">Please start the server with <code>node server.js</code>.</p></div>'));
+</script></body></html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login | EarthNest</title><link rel="stylesheet" href="/style.css"></head><body>
+<div id="hdr"></div>
+<main><div class="center"><div class="box"><h1 style="font-size:30px;margin-bottom:6px">Welcome to EarthNest</h1><p class="sub">Log in to track orders and manage your profile.</p>
+<div id="err"></div>
+<div id="auth"><div class="tabs"><button class="on" id="t-in">Login</button><button id="t-up">Create account</button></div>
+<form id="f" style="display:grid;gap:14px"><div id="nm" hidden><label>Full name</label><input id="name" autocomplete="name"></div>
+<div><label>Email</label><input id="email" type="email" required autocomplete="email"></div>
+<div id="mb" hidden><label>Mobile number</label><input id="mobile" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}" placeholder="9876543210" autocomplete="tel"></div>
+<div><label>Password</label><input id="pw" type="password" required minlength="6" autocomplete="current-password"></div>
+<button class="btn block" id="go">Login</button></form>
+<p style="text-align:center;margin-top:14px"><button class="link" id="fg" type="button" style="font-size:13px">Forgot password?</button></p></div>
+
+<form id="rf" hidden style="gap:14px"><div class="tabs"><button type="button" class="on" id="m-mob">📱 Mobile OTP</button><button type="button" id="m-em">✉️ Email</button></div>
+<p class="sub" id="rl" style="margin:0"></p>
+<div id="w-mob"><label>Registered mobile number</label><input id="rphone" inputmode="numeric" maxlength="10" placeholder="9876543210"></div>
+<div id="w-em" hidden><label>Registered email</label><input id="remail" type="email"></div>
+<div id="step2" hidden style="gap:14px"><div><label>6-digit OTP</label><input id="code" inputmode="numeric" maxlength="6" class="mono" autocomplete="one-time-code"></div><div><label>New password</label><input id="npw" type="password" minlength="6" autocomplete="new-password"></div></div>
+<button class="btn block" id="rgo">Send OTP</button><button class="link" id="bk" type="button" style="font-size:13px">← Back to login</button></form>
+<p style="font-size:12px;color:var(--mut);margin-top:18px;text-align:center">Store owner? Log in here with your admin email — you'll be taken to the Admin Portal.</p></div></div></main>
+<div id="ftr"></div><div id="toast"></div>
+<script src="/app.js"></script>
+<script>
+init(); let up = false, byMobile = true, sent = false;
+const show = (el, on, d = 'block') => { el.hidden = !on; el.style.display = on ? d : 'none'; };
+const mode = u => { up = u; $('#t-in').classList.toggle('on', !u); $('#t-up').classList.toggle('on', u); show($('#nm'), u); show($('#mb'), u); $('#name').required = u; $('#mobile').required = u; $('#go').textContent = u ? 'Create account' : 'Login'; $('#pw').autocomplete = u ? 'new-password' : 'current-password'; $('#err').innerHTML = ''; };
+$('#t-in').onclick = () => mode(false); $('#t-up').onclick = () => mode(true);
+$('#f').onsubmit = async e => {
+  e.preventDefault(); $('#go').disabled = true;
+  try {
+    const r = await api(up ? '/api/register' : '/api/login', { method: 'POST', body: { name: $('#name').value, email: $('#email').value, phone: $('#mobile').value, password: $('#pw').value } });
+    localStorage.setItem('en_token', r.token); localStorage.setItem('en_user', JSON.stringify(r.user));
+    const next = new URLSearchParams(location.search).get('next');
+    location.href = r.user.role === 'admin' ? '/admin.html' : (next && next.startsWith('/') && !next.startsWith('//') ? next : '/');
+  } catch (er) { $('#err').innerHTML = `<div class="msg">${esc(er.message)}</div>`; $('#go').disabled = false; }
+};
+
+// ----- forgot password (mobile OTP or email) -----
+const setRl = t => { $('#rl').textContent = t; $('#rl').hidden = !t; };
+const method = m => { byMobile = m; $('#m-mob').classList.toggle('on', m); $('#m-em').classList.toggle('on', !m); show($('#w-mob'), m); show($('#w-em'), !m); setRl(''); };
+const forgot = on => { show($('#auth'), !on); show($('#rf'), on, 'grid'); $('#err').innerHTML = ''; sent = false; show($('#step2'), false); $('#rgo').textContent = 'Send OTP'; $('#rphone').readOnly = $('#remail').readOnly = false; $('#code').required = $('#npw').required = false; if (on) { $('#remail').value = $('#email').value; method(true); } };
+$('#fg').onclick = () => forgot(true); $('#bk').onclick = () => forgot(false);
+$('#m-mob').onclick = () => !sent && method(true); $('#m-em').onclick = () => !sent && method(false);
+$('#rf').onsubmit = async e => {
+  e.preventDefault(); $('#rgo').disabled = true; const id = byMobile ? { phone: $('#rphone').value } : { email: $('#remail').value };
+  try {
+    if (!sent) {
+      if (byMobile && !/^[6-9]\d{9}$/.test($('#rphone').value)) throw new Error('Enter a valid 10-digit mobile number');
+      const r = await api('/api/forgot', { method: 'POST', body: id });
+      sent = true; show($('#step2'), true, 'grid'); $('#rphone').readOnly = $('#remail').readOnly = true; $('#code').required = $('#npw').required = true; $('#rgo').textContent = 'Reset password';
+      setRl(byMobile && r.sms ? 'If this number is registered, an OTP has been sent by SMS. It is valid for 15 minutes.' : 'If this account exists, a code has been issued. SMS is not active on this store, so please ask the store (call/WhatsApp) for your code. It is valid for 15 minutes.');
+      $('#err').innerHTML = '';
+    } else {
+      await api('/api/reset', { method: 'POST', body: { ...id, code: $('#code').value, password: $('#npw').value } });
+      forgot(false); $('#err').innerHTML = '<div class="msg g">Password changed. Please log in with your new password.</div>';
+    }
+  } catch (er) { $('#err').innerHTML = `<div class="msg">${esc(er.message)}</div>`; }
+  $('#rgo').disabled = false;
+};
+</script></body></html>

@@ -1,0 +1,244 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Hand-Thrown Stoneware Vase",
+      "category": "Ceramics",
+      "price": 1299,
+      "mrp": 1699,
+      "stock": 10,
+      "emoji": "🏺",
+      "material": "Clay",
+      "desc": "Crafted by master potters using natural terracotta clay with a matte earth glaze."
+    },
+    {
+      "id": 2,
+      "name": "Organic Cotton Throw Blanket",
+      "category": "Home Textiles",
+      "price": 1899,
+      "mrp": 2499,
+      "stock": 8,
+      "emoji": "🧶",
+      "material": "Cotton",
+      "desc": "Handloom woven from unbleached organic cotton for lasting comfort."
+    },
+    {
+      "id": 3,
+      "name": "Reclaimed Oak Cutting Board",
+      "category": "Kitchen",
+      "price": 999,
+      "mrp": 1299,
+      "stock": 15,
+      "emoji": "🪵",
+      "material": "Wood",
+      "desc": "Sturdy board fashioned from reclaimed seasoned oak with natural beeswax polish."
+    },
+    {
+      "id": 4,
+      "name": "Natural Fiber Storage Baskets (Set of 2)",
+      "category": "Sustainable Living",
+      "price": 1499,
+      "mrp": 1999,
+      "stock": 10,
+      "emoji": "🧺",
+      "material": "Jute",
+      "desc": "Hand-braided jute baskets ideal for decluttering living spaces sustainably."
+    },
+    {
+      "id": 5,
+      "name": "Bamboo Toothbrush (Pack of 4)",
+      "category": "Personal Care",
+      "price": 349,
+      "mrp": 499,
+      "stock": 40,
+      "emoji": "🪥",
+      "material": "Bamboo",
+      "desc": "Compostable bamboo handles with soft charcoal-infused bristles."
+    },
+    {
+      "id": 6,
+      "name": "Refillable Glass Soap Dispenser",
+      "category": "Bath",
+      "price": 649,
+      "mrp": 899,
+      "stock": 20,
+      "emoji": "🧴",
+      "material": "Glass",
+      "desc": "Amber glass pump bottle designed for zero-waste liquid soap refills."
+    },
+    {
+      "id": 7,
+      "name": "Pure Copper Water Bottle",
+      "category": "Kitchen",
+      "price": 899,
+      "mrp": 1199,
+      "stock": 25,
+      "emoji": "🥤",
+      "material": "Copper",
+      "desc": "Hammered copper bottle following the Ayurvedic tradition of mineral-rich water."
+    },
+    {
+      "id": 8,
+      "name": "Terracotta Matka Water Pot",
+      "category": "Ceramics",
+      "price": 749,
+      "mrp": 999,
+      "stock": 18,
+      "emoji": "🏺",
+      "material": "Terracotta",
+      "desc": "Naturally cools water without electricity. Handmade by village potters."
+    },
+    {
+      "id": 9,
+      "name": "Beeswax Food Wraps (Set of 3)",
+      "category": "Kitchen",
+      "price": 499,
+      "mrp": 699,
+      "stock": 30,
+      "emoji": "🐝",
+      "material": "Beeswax",
+      "desc": "Washable, reusable wraps that replace cling film."
+    },
+    {
+      "id": 10,
+      "name": "Neem Wood Comb",
+      "category": "Personal Care",
+      "price": 249,
+      "mrp": 349,
+      "stock": 50,
+      "emoji": "🌿",
+      "material": "Neem",
+      "desc": "Anti-static, hand-carved neem wood comb. Gentle on scalp and hair."
+    },
+    {
+      "id": 11,
+      "name": "Soy Wax Aromatic Candle",
+      "category": "Home Decor",
+      "price": 799,
+      "mrp": 1099,
+      "stock": 22,
+      "emoji": "🕯️",
+      "material": "Soy wax",
+      "desc": "Slow-burning candle poured in a reusable clay cup with sandalwood notes."
+    },
+    {
+      "id": 12,
+      "name": "Handloom Cotton Yoga Mat",
+      "category": "Wellness",
+      "price": 1599,
+      "mrp": 2099,
+      "stock": 9,
+      "emoji": "🧘",
+      "material": "Cotton",
+      "desc": "Woven organic cotton mat with natural grip. Plastic-free and machine washable."
+    },
+    {
+      "id": 13,
+      "name": "Stainless Steel Lunch Box",
+      "category": "Kitchen",
+      "price": 899,
+      "mrp": 1199,
+      "stock": 20,
+      "emoji": "🍱",
+      "material": "Steel",
+      "desc": "Leak-proof 3-tier tiffin built to last a lifetime."
+    },
+    {
+      "id": 14,
+      "name": "Reusable Cotton Produce Bags (Set of 5)",
+      "category": "Sustainable Living",
+      "price": 399,
+      "mrp": 549,
+      "stock": 35,
+      "emoji": "🛍️",
+      "material": "Cotton",
+      "desc": "Light mesh bags for vegetables, fruit and grains. Say no to plastic covers."
+    }
+  ],
+  "settings": {
+    "upiId": "earthnest@upi",
+    "upiName": "EarthNest Store",
+    "bankName": "HDFC Bank",
+    "accountNo": "50200012345678",
+    "ifscCode": "HDFC0001234",
+    "freeShippingAbove": 999,
+    "shippingFee": 80
+  },
+  "users": [
+    {
+      "id": 1,
+      "name": "Store Admin",
+      "email": "admin@earthnest.local",
+      "role": "admin",
+      "pw": "51c57be093ef69320acdc41a7cad6970:289fb32bd5757e15230a07d11e581aef0e0f7d1a0aef8293f96bd0fe259466db",
+      "defaultPw": true
+    },
+    {
+      "id": 1793799751788,
+      "name": "ABHISHEK KUMAR YADAV",
+      "email": "abhisheky01adav@gmail.com",
+      "phone": "9555399133",
+      "role": "customer",
+      "pw": "fbc73152f94c52e92e5b69d00ba61ef5:54df708e2c89b0697710a63f858c0476e524146f6e587fd23d4ce8d3aace5665"
+    }
+  ],
+  "orders": [
+    {
+      "id": "EN-1001",
+      "date": "2026-10-27T08:59:13.337Z",
+      "userId": null,
+      "items": [
+        {
+          "id": 1,
+          "name": "Hand-Thrown Stoneware Vase",
+          "emoji": "🏺",
+          "price": 1299,
+          "qty": 1
+        }
+      ],
+      "subtotal": 1299,
+      "shipping": 0,
+      "total": 1299,
+      "payment": "cod",
+      "utr": null,
+      "address": {
+        "name": "ABHISHEK KUMAR YADAV",
+        "phone": "9555399133",
+        "address": "dhudhaila",
+        "city": "Ballia",
+        "pin": "277001"
+      },
+      "status": "placed"
+    },
+    {
+      "id": "EN-1002",
+      "date": "2026-11-04T13:44:36.998Z",
+      "userId": 1793799751788,
+      "items": [
+        {
+          "id": 1,
+          "name": "Hand-Thrown Stoneware Vase",
+          "emoji": "🏺",
+          "price": 1299,
+          "qty": 1
+        }
+      ],
+      "subtotal": 1299,
+      "shipping": 0,
+      "total": 1299,
+      "payment": "cod",
+      "utr": null,
+      "address": {
+        "name": "ABHISHEK KUMAR YADAV",
+        "phone": "9555399133",
+        "address": "dhudhaila",
+        "city": "Ballia",
+        "pin": "277001"
+      },
+      "status": "placed"
+    }
+  ],
+  "nextProductId": 15,
+  "nextOrderNo": 1003,
+  "secret": "211579719fe3a7820697beac99f1ecd3505b5a57775c2d8f8e205f807a3c165a"
+}
